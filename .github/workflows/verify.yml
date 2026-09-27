@@ -1,0 +1,28 @@
+name: Verify manifest signature
+
+# Every Zohara system rejects a manifest whose signature doesn't match the
+# exact bytes served here. Check that on every push, with the same public key
+# the OS ships (manifest.pub, a copy of zohara-store-rs/data/manifest.pub),
+# so a bad signature can't reach users unnoticed.
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install minisign and jq
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq minisign jq
+      - name: Line endings are LF (what clients download)
+        run: |
+          if grep -q $'\r' manifest.json; then echo "::error::manifest.json has CRLF line endings"; exit 1; fi
+      - name: Signature matches
+        run: minisign -V -p manifest.pub -m manifest.json -x manifest.json.minisig
+      - name: Manifest is well-formed
+        run: |
+          jq -e '.approved_date | test("^[0-9]{4}/[0-9]{2}/[0-9]{2}$")' manifest.json
+          jq -e '.min_updater_version | type == "string"' manifest.json
+          jq -e '.held_packages | type == "array"' manifest.json

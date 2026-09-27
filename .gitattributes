@@ -2,3 +2,4 @@
 tools/* text eol=lf
 manifest.json -text
 manifest.json.minisig -text
+manifest.pub -text

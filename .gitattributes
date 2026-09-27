@@ -1,2 +1,4 @@
 *.sh text eol=lf
 tools/* text eol=lf
+manifest.json -text
+manifest.json.minisig -text

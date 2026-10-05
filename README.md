@@ -15,6 +15,15 @@ the OS (`/usr/share/zohara/manifest.pub`), refuses anything unsigned, tampered
 with or older than what the computer already has, then points the mirror at the
 approved day and runs one full upgrade.
 
+## Current key
+
+The signing key was replaced on 2026-10-05 (the previous secret key, id `22D47601D3B4779B`, was made on a Windows PC and
+was lost). The current key id is `E2D2009325647762`; `manifest.pub` here and `zohara-store-rs/data/manifest.pub` in the
+`zohara` repo hold its public half. The secret key is `~/.minisign/zohara.key` on the owner's laptop (no password;
+**back it up to a USB stick**). Machines installed from an ISO built before this date hold the old public key and
+cannot verify the new manifests; they need one manual `sudo pacman -Syu` (which installs the Store that has the new
+key), or a reinstall.
+
 ## One-time setup: the signing key
 
 ```bash
